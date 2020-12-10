@@ -7,6 +7,8 @@ import java.util.Scanner;
  */
 public class Cinema {
     private static Scanner parse = new Scanner(System.in);
+    private static int totalPurchasedTickets = 0;
+    private static int currentIncome = 0;
 
     public static void main(String[] args) {
         //1 Read rows and seats the theatre.
@@ -20,21 +22,56 @@ public class Cinema {
 
     }
 
+    /**
+     * Show some statistics
+     */
+    public static void statistics(char[][] theatre) {
+        int totalTickets = theatre.length * theatre[0].length;
+        System.out.println("Number of purchased tickets: " + totalPurchasedTickets);
+        System.out.printf("Percentage: %.2f%%\n", (float) (totalPurchasedTickets * 100) / totalTickets);
+        System.out.println("Current income: $" + currentIncome);
+        System.out.println("Total income: $" + calculateProfit(theatre.length, theatre[0].length));
+    }
 
     /**
      * Ask the user for their seat, calculate the price and update seat the theatre
      */
     public static void buyTicket(char[][] theatre) {
-        //2 Ask for the seat.
-        System.out.println("Enter a row number:");
-        int rowUser = parse.nextInt();
-        System.out.println("Enter a seat number in that row:");
-        int seatUser = parse.nextInt();
+        boolean askAgain = false;
+        int rowUser, seatUser;
+        do {
+            //2 Ask for the seat.
+            askAgain = false;
+            System.out.println("Enter a row number:");
+            rowUser = parse.nextInt();
+            System.out.println("Enter a seat number in that row:");
+            seatUser = parse.nextInt();
+            //Cheking the ticket if it has not been sold
+            if (!isWithinLimits(theatre, rowUser - 1, seatUser - 1)) {
+                System.out.println("\nWrong input!\n");
+                askAgain = true;
+            } else if (isPurchasedSeat(theatre, rowUser, seatUser)) {
+                System.out.println("\nThat ticket has already been purchased!\n");
+                askAgain = true;
+            }
+
+        } while (askAgain);
 
         // Calculate price ticket
-        System.out.println("Ticket price: $" + calculatePrice(theatre, rowUser));
+        int price = calculatePrice(theatre, rowUser);
+        System.out.println("Ticket price: $" + price);
+        totalPurchasedTickets++;
+        currentIncome += price;
         //3 Print again theatre but now with seats occupied.
         theatre[rowUser - 1][seatUser - 1] = 'B';
+    }
+
+    private static boolean isWithinLimits(char[][] theatre, int rowUser, int seatUser) {
+        return (rowUser >= 0 && rowUser < theatre.length) && (seatUser >= 0 && seatUser < theatre[0].length);
+    }
+
+    private static boolean isPurchasedSeat(char[][] theatre, int rowUser, int seatUser) {
+        return theatre[rowUser - 1][seatUser - 1] == 'B';
     }
 
     /**
@@ -46,6 +83,7 @@ public class Cinema {
             System.out.println();
             System.out.println("1. Show the seats");
             System.out.println("2. Buy a ticket");
+            System.out.println("3. Statistics");
             System.out.println("0. Exit");
             answer = parse.nextInt();
             System.out.println();
@@ -56,6 +94,8 @@ public class Cinema {
                 case 2:
                     buyTicket(theatre);
                     break;
+                case 3:
+                    statistics(theatre);
             }
         } while (answer != 0);
     }
