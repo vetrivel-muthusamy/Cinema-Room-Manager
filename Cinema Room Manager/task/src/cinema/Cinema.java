@@ -9,15 +9,22 @@ public class Cinema {
     private static Scanner parse = new Scanner(System.in);
 
     public static void main(String[] args) {
-        //1 Read rows and seats the theater.
+        //1 Read rows and seats the theatre.
         System.out.println("Enter the number of rows:");
         final int ROW = parse.nextInt();
         System.out.println("Enter the number of seats in each row:");
         final int SEATS = parse.nextInt();
-        char[][] theatre = makeTheathe(ROW, SEATS);
-        printSeats(theatre);
+        char[][] theatre = makeTheatre(ROW, SEATS);
+        // Show menu
+        showMenu(theatre);
+
+    }
 
 
+    /**
+     * Ask the user for their seat, calculate the price and update seat the theatre
+     */
+    public static void buyTicket(char[][] theatre) {
         //2 Ask for the seat.
         System.out.println("Enter a row number:");
         int rowUser = parse.nextInt();
@@ -26,11 +33,33 @@ public class Cinema {
 
         // Calculate price ticket
         System.out.println("Ticket price: $" + calculatePrice(theatre, rowUser));
-        //3 Print again theater but now with seats occupied.
+        //3 Print again theatre but now with seats occupied.
         theatre[rowUser - 1][seatUser - 1] = 'B';
-
-        printSeats(theatre);
     }
+
+    /**
+     * Show the menu.
+     */
+    public static void showMenu(char[][] theatre) {
+        int answer;
+        do {
+            System.out.println();
+            System.out.println("1. Show the seats");
+            System.out.println("2. Buy a ticket");
+            System.out.println("0. Exit");
+            answer = parse.nextInt();
+            System.out.println();
+            switch (answer) {
+                case 1:
+                    printSeats(theatre);
+                    break;
+                case 2:
+                    buyTicket(theatre);
+                    break;
+            }
+        } while (answer != 0);
+    }
+
     /**
      * Calculate the prize the one ticket.
      * Depending of rules: if not more than 60 the ticket is 10 dollars
@@ -53,6 +82,7 @@ public class Cinema {
         }
         return 8;
     }
+
     /**
      * Calculate the profit from all the sold tickets depending on the number of available seats.
      *
@@ -73,18 +103,18 @@ public class Cinema {
     }
 
     /**
-     * Build the theathe
+     * Build the theatre
      *
-     * @return theathe que representa una matriz.
+     * @return theatre que representa una matriz.
      */
-    public static char[][] makeTheathe(int row, int colum) {
-        char[][] theathe = new char[row][colum];
+    public static char[][] makeTheatre(int row, int colum) {
+        char[][] theatre = new char[row][colum];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < colum; j++) {
-                theathe[i][j] = 'S';
+                theatre[i][j] = 'S';
             }
         }
-        return theathe;
+        return theatre;
     }
 
     /**
