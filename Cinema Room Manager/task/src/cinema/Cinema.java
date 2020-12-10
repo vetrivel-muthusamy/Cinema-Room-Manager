@@ -9,17 +9,50 @@ public class Cinema {
     private static Scanner parse = new Scanner(System.in);
 
     public static void main(String[] args) {
-        // final int ROW = 7, SEATS = 8;
-        // char[][] theathe =  makeTheathe(ROW, SEATS);
-        // printSeats(theathe, ROW, SEATS);
+        //1 Read rows and seats the theater.
         System.out.println("Enter the number of rows:");
-        int rows = parse.nextInt();
+        final int ROW = parse.nextInt();
         System.out.println("Enter the number of seats in each row:");
-        int seats = parse.nextInt();
-        System.out.println("Total income:\n$" + calculateProfit(rows, seats));
+        final int SEATS = parse.nextInt();
+        char[][] theatre = makeTheathe(ROW, SEATS);
+        printSeats(theatre);
 
+
+        //2 Ask for the seat.
+        System.out.println("Enter a row number:");
+        int rowUser = parse.nextInt();
+        System.out.println("Enter a seat number in that row:");
+        int seatUser = parse.nextInt();
+
+        // Calculate price ticket
+        System.out.println("Ticket price: $" + calculatePrice(theatre, rowUser));
+        //3 Print again theater but now with seats occupied.
+        theatre[rowUser - 1][seatUser - 1] = 'B';
+
+        printSeats(theatre);
     }
-
+    /**
+     * Calculate the prize the one ticket.
+     * Depending of rules: if not more than 60 the ticket is 10 dollars
+     * else is more than 60 then front half 10 and the back half is 8
+     *
+     * @param row user.
+     * @parama colum user.
+     */
+    public static int calculatePrice(char[][] cinema, int row) {
+        int numSeats = cinema.length * cinema[0].length;
+        if (numSeats < 60)
+            return 10;
+        else {
+            // Divede rows
+            int halfRows = cinema.length / 2;
+            // Determinate seat of user.
+            if (row <= halfRows) {
+                return 10;
+            }
+        }
+        return 8;
+    }
     /**
      * Calculate the profit from all the sold tickets depending on the number of available seats.
      *
@@ -39,7 +72,11 @@ public class Cinema {
 
     }
 
-    //Build the theathe
+    /**
+     * Build the theathe
+     *
+     * @return theathe que representa una matriz.
+     */
     public static char[][] makeTheathe(int row, int colum) {
         char[][] theathe = new char[row][colum];
         for (int i = 0; i < row; i++) {
@@ -50,20 +87,23 @@ public class Cinema {
         return theathe;
     }
 
-    //Visualize the seating arrangement by printing the scheme to the console.
-    public static void printSeats(char[][] theathe, int row, int colum) {
+    /**
+     * Visualize the seating arrangement by printing the scheme to the console.
+     * Take advantage of object oriented programming.
+     */
+    public static void printSeats(char[][] theatre) {
         System.out.println("Cinema:");
         // First row numbers
         System.out.print(" ");
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= theatre[0].length; i++) {
             System.out.printf(" %d", i);
         }
         System.out.println();
-        // Second part scenenary
-        for (int i = 0; i < row; i++) {
+        // Second part scenery
+        for (int i = 0; i < theatre.length; i++) { // return rows
             System.out.printf("%d", i + 1);
-            for (int j = 0; j < colum; j++) {
-                System.out.print(" " + theathe[i][j]);
+            for (int j = 0; j < theatre[i].length; j++) { //return columns
+                System.out.print(" " + theatre[i][j]);
             }
             System.out.println("");
         }
